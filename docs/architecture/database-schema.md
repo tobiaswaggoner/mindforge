@@ -83,6 +83,36 @@ Class → Subject → Theme → Topic → QuestionCluster
 
 Mit Predecessor/Successor-Relationen für adaptive Lernpfade.
 
+## Migrations-Strategie
+
+### Lokale Entwicklung (SQLite)
+
+Eigenes leichtgewichtiges Migrationssystem in `apps/backend/src/db/migrations/`:
+
+- Migrationen liegen in `versions/m001_name.py`, `m002_name.py`, etc.
+- Tracking via `_migrations`-Tabelle
+- API-Endpoints: `GET /migrations/status`, `POST /migrations/run`, `GET /migrations/history`
+- Bewusster Aufruf (kein Auto-Migrate beim Start)
+
+### Produktion (Supabase)
+
+> **Hinweis:** Siehe [cloud.md](cloud.md) für Deployment-Details.
+
+Supabase hat ein eigenes CLI-basiertes Migrationssystem. **Unser Python-Migrationssystem wird in Produktion NICHT verwendet.**
+
+**Warum?**
+- Supabase erlaubt kein `CREATE TABLE` über die REST-API
+- Supabase CLI verwaltet Migrationen in `supabase/migrations/`
+- Schema-Änderungen werden über Supabase Dashboard oder CLI deployed
+
+**Workflow für Produktion:**
+1. Schema-Änderungen lokal in SQLite entwickeln und testen
+2. Entsprechende SQL-Migration für Supabase erstellen (`supabase migration new`)
+3. Via `supabase db push` deployen
+4. Der `SupabaseAdapter` greift nur auf bestehende Tabellen zu (CRUD)
+
+**Referenz:** [Supabase Database Migrations Docs](https://supabase.com/docs/guides/deployment/database-migrations)
+
 ## D&D-Kompatibilität
 
 Dungeons & Diplomas wird auf dieses Schema migriert. Die bisherige flache `questions`-Tabelle wird ersetzt durch die neue Struktur.
