@@ -4,7 +4,7 @@ from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
 from .config import settings
-from .api.routes import health, migrations
+from .api.routes import health, migrations, subjects, clusters, variants, answers
 
 app = FastAPI(
     title=settings.app_name,
@@ -24,6 +24,10 @@ app.add_middleware(
 # Include routers
 app.include_router(health.router, tags=["health"])
 app.include_router(migrations.router)
+app.include_router(subjects.router)
+app.include_router(clusters.router)
+app.include_router(variants.router)
+app.include_router(answers.router)
 
 
 @app.get("/")
