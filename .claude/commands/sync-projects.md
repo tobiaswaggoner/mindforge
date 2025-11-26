@@ -19,27 +19,71 @@ Format der State-Datei:
 ```json
 {
   "last_sync": "2025-01-15T10:30:00Z",
+  "first_run": false,
   "repos": {
     "mindforge": { "last_commit": "abc123" },
-    "dungeons-and-diplomas": { "last_commit": "def456" },
-    "mindforge_work": { "last_commit": "ghi789" }
+    "dungeons-and-diplomas": {
+      "remote": "https://github.com/milchinien/dungeons-and-diplomas.git",
+      "last_commit": "def456"
+    },
+    "mindforge_work": {
+      "remote": "https://github.com/tobiaswaggoner/mindforge_work.git",
+      "last_commit": "ghi789"
+    }
   }
 }
 ```
 
+**Wichtig:** Keine absoluten Pfade speichern! Pfade werden zur Laufzeit ermittelt (siehe Schritt 2).
+
 ## Schritt 2: Repos klonen/aktualisieren
+
+### Base-Pfad ermitteln
+
+Die drei Repos (`mindforge`, `dungeons-and-diplomas`, `mindforge_work`) sind normalerweise direkte Geschwister.
+
+**Schritt 1:** Prüfe, ob du in einem Git-Worktree arbeitest:
+```bash
+git worktree list
+# Beispiel-Output:
+# C:/src/xrai/mindforge                                    f51d3ac [main]
+# C:/Users/tobia/.claude-worktrees/mindforge/festive-pike  c546696 [festive-pike]
+```
+
+**Schritt 2:** Ermittle den Base-Pfad:
+- Falls Worktree: Nimm den Pfad der ersten Zeile (main branch) und gehe ein Verzeichnis höher
+- Falls kein Worktree: Nimm das Parent-Verzeichnis des aktuellen Repos
+
+```bash
+# Automatische Ermittlung des Base-Pfads:
+MAIN_REPO=$(git worktree list | head -1 | awk '{print $1}')
+BASE_PATH=$(dirname "$MAIN_REPO")
+echo "Base-Pfad: $BASE_PATH"
+# Erwartetes Ergebnis z.B.: C:/src/XRAI
+```
+
+Die Sibling-Repos sind dann:
+- `$BASE_PATH/mindforge`
+- `$BASE_PATH/dungeons-and-diplomas`
+- `$BASE_PATH/mindforge_work`
 
 Stelle sicher, dass alle drei Repos lokal verfügbar sind:
 
 ```bash
+# Beispiel für NTLT-PC-09-2023:
+# Base: C:/src/XRAI/
+# - C:/src/XRAI/mindforge
+# - C:/src/XRAI/dungeons-and-diplomas
+# - C:/src/XRAI/mindforge_work
+
 # dungeons-and-diplomas (falls nicht vorhanden)
-if [ ! -d "/home/user/dungeons-and-diplomas" ]; then
-  git clone https://github.com/milchinien/dungeons-and-diplomas.git /home/user/dungeons-and-diplomas
+if [ ! -d "$BASE_PATH/dungeons-and-diplomas" ]; then
+  git clone https://github.com/milchinien/dungeons-and-diplomas.git $BASE_PATH/dungeons-and-diplomas
 fi
 
 # mindforge_work (falls nicht vorhanden)
-if [ ! -d "/home/user/mindforge_work" ]; then
-  git clone https://github.com/tobiaswaggoner/mindforge_work.git /home/user/mindforge_work
+if [ ! -d "$BASE_PATH/mindforge_work" ]; then
+  git clone https://github.com/tobiaswaggoner/mindforge_work.git $BASE_PATH/mindforge_work
 fi
 ```
 
