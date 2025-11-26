@@ -10,6 +10,43 @@ Diese Datei dokumentiert relevante Änderungen aus den Schwester-Projekten des M
 
 ---
 
+## Sync vom 2025-11-26 12:30
+
+### dungeons-and-diplomas
+
+**Aktive Branches:**
+- `refactor/move-spike-into-root` - Spike-Migration (aktiv)
+- `main` - Haupt-Entwicklungsbranch
+
+#### Relevante Änderungen
+
+| Commit | Beschreibung | Relevanz für MindForge |
+|--------|--------------|------------------------|
+| `28a7566` | **refactor: move-spike-into-root** | Major Repo-Umstrukturierung: Next.js-App aus `spike/next-app/` in Root verschoben. Phaser-Scenes entfernt (CombatScene, MainScene). Package-Manager von pnpm auf npm gewechselt. Items-System erweitert. |
+
+#### Architektur-Erkenntnisse
+- D&D wechselt weg von Phaser-Scenes zu React-basiertem Ansatz
+- Phaser-spezifische Dateien (game/scenes, game/config.ts, game/types/combat.ts) entfernt
+- Items-System (`lib/items/types.ts`, `lib/items/LootGenerator.ts`) erweitert
+- Supabase-Client (`lib/supabase.ts`) entfernt - Migration zu lokaler DB?
+- Neue CLAUDE.md und Agents.md für bessere Claude-Code-Integration
+
+#### Sonstige Aktivität
+- Massive Dateimigration (>200 Dateien verschoben)
+- Individual_Tiles Assets entfernt
+
+### mindforge_work
+
+Keine neuen Commits seit letztem Sync.
+
+### mindforge (dieses Repo)
+
+| Commit | Beschreibung |
+|--------|--------------|
+| `a3dc3bd` | Merge PR #4: Content Engine Restructure |
+
+---
+
 ## Sync vom 2025-11-26 (Erster Sync - letzte 30 Tage)
 
 ### dungeons-and-diplomas
@@ -140,5 +177,5 @@ Diese Datei dokumentiert relevante Änderungen aus den Schwester-Projekten des M
 
 ---
 
-*Letzte Synchronisation: 2025-11-26T11:00:00Z*
+*Letzte Synchronisation: 2025-11-26T12:30:00Z*
 *Nächster Sync: Führe `/sync-projects` aus*
