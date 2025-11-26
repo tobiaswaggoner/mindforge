@@ -61,95 +61,11 @@ mindforge/
 
 ---
 
-## Datenmodell (Content)
+## Architektur-Dokumentation
 
-### Kernentitäten
+Detaillierte Dokumentation in `docs/architecture/`:
 
-```
-Subject (Fach)
-  └── QuestionCluster (Kanonische Frage)
-        ├── cluster_id (z.B. "mathe_gleichung_linear_01")
-        ├── topic (z.B. "Lineare Gleichungen")
-        ├── canonical_template
-        └── QuestionVariant[]
-              ├── question_text
-              ├── answers[]
-              ├── correct_index
-              └── variant_id
-```
-
-### Datenbank-Schema (Erweiterung zu D&D)
-
-```sql
--- Cluster-Metadaten
-CREATE TABLE question_clusters (
-  id TEXT PRIMARY KEY,
-  subject_key TEXT NOT NULL,
-  topic TEXT NOT NULL,
-  canonical_template TEXT,
-  difficulty_baseline INTEGER DEFAULT 5,
-  created_at DATETIME DEFAULT CURRENT_TIMESTAMP
-);
-
--- Erweiterte Questions-Tabelle
--- (kompatibel mit D&D, erweitert um cluster_id)
-ALTER TABLE questions ADD COLUMN cluster_id TEXT REFERENCES question_clusters(id);
-```
-
----
-
-## LLM-Integration
-
-### Provider-Abstraktion
-
-```python
-# Abstraktes Interface
-class LLMProvider:
-    def generate(self, prompt: str, model: str) -> str: ...
-
-# Konkrete Implementierungen
-class OpenAIProvider(LLMProvider): ...
-class AnthropicProvider(LLMProvider): ...  # Zukünftig
-```
-
-### Modell-Konfiguration
-
-- **Standard**: GPT-5.1 (OpenAI)
-- **Konfigurierbar**: Modell pro Use-Case wählbar
-- **Kostenoptimierung**: Günstigere Modelle für einfache Tasks
-
----
-
-## Tracking-System (Geplant)
-
-Für Audit, Rollback und Qualitätssicherung:
-
-### IDs
-
-| ID-Typ | Zweck |
-|--------|-------|
-| **Generation Session ID** | Gruppiert alle Generierungen einer Session |
-| **Correlation ID** | Verknüpft einen Request mit allen Ergebnissen |
-
-### Tracking-Tabelle (Konzept)
-
-```sql
-CREATE TABLE generation_tracking (
-  id INTEGER PRIMARY KEY,
-  session_id TEXT NOT NULL,
-  correlation_id TEXT NOT NULL,
-  entity_type TEXT NOT NULL,      -- 'question', 'variant', 'cluster'
-  entity_id TEXT NOT NULL,
-  action TEXT NOT NULL,           -- 'created', 'updated', 'deleted'
-  created_at DATETIME DEFAULT CURRENT_TIMESTAMP
-);
-```
-
-### Use Cases
-
-- Audit-Log: "Wer hat wann was generiert?"
-- Rollback: "Lösche alle Fragen aus Session X"
-- Analyse: "Qualität der Generierungen von gestern"
+- **[database-schema.md](docs/architecture/database-schema.md)** - Datenbank-Schema (Subjects, Clusters, Variants, Answers)
 
 ---
 
@@ -201,13 +117,8 @@ supabase db push
 
 ## Schnittstelle zu D&D
 
-MindForge generiert Content, der von D&D konsumiert wird:
+MindForge und D&D teilen sich die gleiche Datenbank und Abstraktionsschicht:
 
 - **Geteilte Datenbank**: Gleiche SQLite/Supabase-Instanz
-- **Fragen-Format**: Kompatibel mit D&D `questions`-Tabelle
-- **Neue Felder**: `cluster_id` für Varianten-Gruppierung
-
-### D&D Anpassungen (separat)
-
-- Question-Selection: Cluster → zufällige Variante
-- Tracking: `answer_log` bleibt unverändert (referenziert `question_id`)
+- **Gemeinsames Schema**: Siehe [database-schema.md](docs/architecture/database-schema.md)
+- **Question-Selection**: D&D wählt zufällige Variante aus Cluster

@@ -1,0 +1,35 @@
+services:
+  backend:
+    build:
+      context: ./apps/backend
+      dockerfile: Dockerfile
+    container_name: mindforge-backend
+    ports:
+      - "4202:4202"
+    environment:
+      - DEBUG=false
+      - DATABASE_URL=sqlite+aiosqlite:///./mindforge.db
+      - CORS_ORIGINS=["http://localhost:4201"]
+    healthcheck:
+      test: ["CMD", "python", "-c", "import urllib.request; urllib.request.urlopen('http://localhost:4202/health')"]
+      interval: 10s
+      timeout: 5s
+      retries: 3
+      start_period: 5s
+    restart: unless-stopped
+
+  admin:
+    build:
+      context: ./apps/admin
+      dockerfile: Dockerfile
+      args:
+        - NEXT_PUBLIC_API_URL=http://localhost:4202
+    container_name: mindforge-admin
+    ports:
+      - "4201:4201"
+    environment:
+      - NODE_ENV=production
+    depends_on:
+      backend:
+        condition: service_healthy
+    restart: unless-stopped

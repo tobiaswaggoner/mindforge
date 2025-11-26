@@ -1,13 +1,13 @@
 {
-  "last_sync": "2025-11-26T11:00:00Z",
+  "last_sync": "2025-11-26T12:30:00Z",
   "first_run": false,
   "repos": {
     "mindforge": {
-      "last_commit": "f51d3acec8c4e02a6475859ec50c2e397db7a487"
+      "last_commit": "a3dc3bdcc42f2bd951ab8a3e058bfaae44cb1c47"
     },
     "dungeons-and-diplomas": {
       "remote": "https://github.com/milchinien/dungeons-and-diplomas.git",
-      "last_commit": "0b39d06fc872db15c7abbeceaefe021e4b4b7877"
+      "last_commit": "28a75660084b31833469eedc211e1587e2d964a5"
     },
     "mindforge_work": {
       "remote": "https://github.com/tobiaswaggoner/mindforge_work.git",
