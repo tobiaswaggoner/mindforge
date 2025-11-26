@@ -1,0 +1,310 @@
+From 0216faf97c534933cd31465b0d684975d4ae7a73 Mon Sep 17 00:00:00 2001
+From: Claude <noreply@anthropic.com>
+Date: Wed, 26 Nov 2025 09:03:59 +0000
+Subject: [PATCH] feat: Add cross-project ecosystem context and sync workflow
+
+- Update CLAUDE.md with project ecosystem overview
+- Add relevance filters for cross-repo changes (D&D perspective)
+- Create /sync-projects slash command for cross-project synchronization
+- Initialize docs/sync/ with history tracking structure
+
+Focus: RAG/API changes from MindForge, learning concepts from Wiki
+---
+ .claude/commands/sync-projects.md  | 147 +++++++++++++++++++++++++++++
+ CLAUDE.md                          |  51 ++++++++++
+ docs/sync/.last-sync.json          |  20 ++++
+ docs/sync/CROSS_PROJECT_HISTORY.md |  40 ++++++++
+ 4 files changed, 258 insertions(+)
+ create mode 100644 .claude/commands/sync-projects.md
+ create mode 100644 docs/sync/.last-sync.json
+ create mode 100644 docs/sync/CROSS_PROJECT_HISTORY.md
+
+diff --git a/.claude/commands/sync-projects.md b/.claude/commands/sync-projects.md
+new file mode 100644
+index 0000000..8abf5c9
+--- /dev/null
++++ b/.claude/commands/sync-projects.md
+@@ -0,0 +1,147 @@
++# Cross-Project Sync für Dungeons & Diplomas
++
++Prüfe den Fortschritt in allen drei Projekten des MindForge-Ökosystems und aktualisiere das lokale History-Dokument.
++
++## Kontext
++
++Dieses Repo ist Teil eines Drei-Repo-Ökosystems:
++- **dungeons-and-diplomas** (dieses Repo): Assessment Tool (Gamified Learning)
++- **mindforge**: KI-Tutor für Wissens-Capture & RAG-Retrieval
++- **mindforge_work**: Projekt-Wiki & Dokumentation
++
++## Schritt 1: State-Datei prüfen
++
++Prüfe, ob `/docs/sync/.last-sync.json` existiert. Falls ja, lies den letzten Sync-Timestamp.
++
++Falls die Datei nicht existiert, erstelle sie mit dem aktuellen Timestamp und setze `first_run: true`.
++
++Format der State-Datei:
++```json
++{
++  "last_sync": "2025-01-15T10:30:00Z",
++  "repos": {
++    "dungeons-and-diplomas": { "last_commit": "abc123" },
++    "mindforge": { "last_commit": "def456" },
++    "mindforge_work": { "last_commit": "ghi789" }
++  }
++}
++```
++
++## Schritt 2: Repos klonen/aktualisieren
++
++Stelle sicher, dass alle drei Repos lokal verfügbar sind:
++
++```bash
++# mindforge (falls nicht vorhanden)
++if [ ! -d "/home/user/mindforge" ]; then
++  git clone https://github.com/tobiaswaggoner/mindforge.git /home/user/mindforge
++fi
++
++# mindforge_work (falls nicht vorhanden)
++if [ ! -d "/home/user/mindforge_work" ]; then
++  git clone https://github.com/tobiaswaggoner/mindforge_work.git /home/user/mindforge_work
++fi
++```
++
++Führe `git fetch --all` in allen drei Repos aus.
++
++## Schritt 3: Neue Commits sammeln
++
++Für jedes Repo, prüfe alle Branches auf neue Commits seit dem letzten Sync:
++
++```bash
++git log --all --since="<last_sync_timestamp>" --oneline --decorate
++```
++
++## Schritt 4: Änderungen kategorisieren (D&D-Fokus)
++
++### Für mindforge
++
++**RELEVANT (ausführlich dokumentieren):**
++- RAG-Retrieval & Wissensstrukturierung - für Fragen-Kontext
++- API-Endpunkte die D&D konsumieren könnte
++- Datenmodelle für Lerninhalte
++- Event-Sourcing-Strukturen
++
++**WENIGER RELEVANT (nur Einzeiler):**
++- UI/UX-Komponenten
++- Auth-Flow-Details
++- Frontend-Styling
++
++### Für mindforge_work
++
++**RELEVANT:**
++- Konzeptuelle Entscheidungen in `/05_REFERENCE_LIBRARY/Concepts/`
++- Assessment & Diagnostik-Konzepte
++- Lernkonzepte: Spaced Repetition, Method of Loci, Chaos-Mechanik
++- Architektur-Blueprints in `/01_BLUEPRINTS/`
++
++**WENIGER RELEVANT:**
++- Forge-Log Weekly Updates (nur Highlights)
++- Spark Chamber (nur bei D&D-relevanten Ideen)
++
++## Schritt 5: History-Dokument aktualisieren
++
++Erstelle oder aktualisiere `/docs/sync/CROSS_PROJECT_HISTORY.md`:
++
++```markdown
++# Cross-Project History (D&D Perspektive)
++
++Letzte Synchronisation: <timestamp>
++
++## <Datum>
++
++### mindforge
++
++#### Relevante Änderungen
++- [commit-hash] RAG-System Update - neue Retrieval-Methode
++- [commit-hash] API-Änderung: Neuer Endpoint für Fragen-Kontext
++
++#### Sonstige Aktivität (Einzeiler)
++- 2 Commits: Frontend-Updates
++
++### mindforge_work
++
++#### Relevante Änderungen
++- Neues Konzept: "Chaos-Mechanik v2" - Anpassung der Verfall-Intervalle
++
++#### Sonstige Aktivität
++- Weekly Update KW47
++
++---
++```
++
++## Schritt 6: State aktualisieren
++
++Aktualisiere `/docs/sync/.last-sync.json` mit:
++- Neuem Timestamp
++- Aktuellen HEAD-Commits aller Repos
++
++## Schritt 7: Zusammenfassung
++
++Gib eine kurze Zusammenfassung aus:
++
++```
++=== D&D Cross-Project Sync ===
++
++Zeitraum: <last_sync> bis <now>
++
++mindforge:
++  - X relevante Commits (RAG/API)
++  - Y sonstige Commits (UI/Frontend)
++
++mindforge_work:
++  - X neue Konzept-Dokumente
++  - Y Forge-Updates
++
++Relevanz für D&D:
++  - [Falls relevant] Neuer RAG-Endpoint verfügbar: ...
++  - [Falls relevant] Konzept-Update zu Spaced Repetition: ...
++```
++
++## Hinweise
++
++- Bei erstem Run: Alle Commits der letzten 30 Tage scannen
++- Commits von Bots/CI ignorieren
++- Branch-Namen mit `claude/` sind Agent-Branches - kurz notieren aber nicht detailliert
++- Fokus auf: Was könnte die Fragen-Generierung oder Assessment-Logik beeinflussen?
+diff --git a/CLAUDE.md b/CLAUDE.md
+index 738d11a..605f01f 100644
+--- a/CLAUDE.md
++++ b/CLAUDE.md
+@@ -1,5 +1,56 @@
+ # Dungeons & Diplomas
+ 
++## Project Ecosystem
++
++Dieses Repository ist Teil eines **Drei-Repo-Ökosystems** für KI-gestütztes Lernen:
++
++| Repository | Zweck | Link |
++|------------|-------|------|
++| **dungeons-and-diplomas** (dieses Repo) | Assessment Tool + Üben/Verfestigen (Gamified) | - |
++| **mindforge** | KI-Tutor für Wissens-Capture & RAG-Retrieval | [GitHub](https://github.com/tobiaswaggoner/mindforge) |
++| **mindforge_work** | Projekt-Wiki & Dokumentation | [Website](https://tobiaswaggoner.github.io/mindforge_work/) |
++
++### Wie die Projekte zusammenhängen
++
++```
++┌─────────────────────────────────────────────────────────────────┐
++│                    MindForge Ökosystem                          │
++├─────────────────────────────────────────────────────────────────┤
++│                                                                 │
++│  ┌─────────────────┐     ┌─────────────────────────────────┐   │
++│  │   MindForge     │     │    Dungeons & Diplomas          │   │
++│  │   (The Codex)   │     │    (Assessment Tool)            │   │
++│  ├─────────────────┤     ├─────────────────────────────────┤   │
++│  │ • Wissen        │     │ • Wissensstand diagnostizieren  │   │
++│  │   erfassen      │────▶│ • Üben & Verfestigen            │   │
++│  │ • Strukturieren │     │ • Spaced Repetition             │   │
++│  │ • RAG-Retrieval │◀────│ • Adaptive Lernpfade            │   │
++│  └─────────────────┘     └─────────────────────────────────┘   │
++│           │                           │                         │
++│           └───────────┬───────────────┘                         │
++│                       ▼                                         │
++│            ┌─────────────────────┐                              │
++│            │   mindforge_work    │                              │
++│            │   (Wiki/Planung)    │                              │
++│            └─────────────────────┘                              │
++└─────────────────────────────────────────────────────────────────┘
++```
++
++### Relevanz für D&D
++
++Bei Änderungen in den Schwester-Repos ist für D&D **primär relevant**:
++- RAG-Retrieval & Wissensstrukturierung (MindForge) - für Fragen-Kontext
++- Konzeptuelle Entscheidungen zu Assessment/Diagnostik (Wiki)
++- API-Schnittstellen zwischen den Systemen
++- Lernkonzepte: Spaced Repetition, Method of Loci (Wiki)
++
++**Weniger relevant** (nur als Einzeiler notieren):
++- MindForge UI/UX-Details
++- MindForge Backend-Architektur (außer APIs)
++- Wiki Forge-Log Updates (nur Highlights)
++
++---
++
+ ## Dokumentation / Planung
+ 
+ `/docs/Tasks/01_Plans` -- High Level Plans / Details
+diff --git a/docs/sync/.last-sync.json b/docs/sync/.last-sync.json
+new file mode 100644
+index 0000000..2739b27
+--- /dev/null
++++ b/docs/sync/.last-sync.json
+@@ -0,0 +1,20 @@
++{
++  "last_sync": null,
++  "first_run": true,
++  "repos": {
++    "dungeons-and-diplomas": {
++      "path": ".",
++      "last_commit": null
++    },
++    "mindforge": {
++      "path": "/home/user/mindforge",
++      "remote": "https://github.com/tobiaswaggoner/mindforge.git",
++      "last_commit": null
++    },
++    "mindforge_work": {
++      "path": "/home/user/mindforge_work",
++      "remote": "https://github.com/tobiaswaggoner/mindforge_work.git",
++      "last_commit": null
++    }
++  }
++}
+diff --git a/docs/sync/CROSS_PROJECT_HISTORY.md b/docs/sync/CROSS_PROJECT_HISTORY.md
+new file mode 100644
+index 0000000..d1e0f94
+--- /dev/null
++++ b/docs/sync/CROSS_PROJECT_HISTORY.md
+@@ -0,0 +1,40 @@
++# Cross-Project History (D&D Perspektive)
++
++Diese Datei dokumentiert relevante Änderungen aus den Schwester-Projekten des MindForge-Ökosystems.
++
++**Fokus für D&D:**
++- RAG-Retrieval & Wissensstrukturierung (MindForge) - für Fragen-Kontext
++- Konzeptuelle Entscheidungen zu Assessment/Diagnostik (Wiki)
++- API-Schnittstellen zwischen den Systemen
++- Lernkonzepte: Spaced Repetition, Method of Loci (Wiki)
++
++---
++
++## Initialer Stand (2025-11-26)
++
++### mindforge
++
++**Repository:** https://github.com/tobiaswaggoner/mindforge
++
++**Aktueller Stand:**
++- Konzeptphase - noch kein Code
++- Geplant: KI-Tutor für tägliches Wissens-Capture
++- Tech Stack (geplant): Node.js, MongoDB, React
++
++**Relevanz für D&D:**
++- Zukünftige RAG-APIs für Fragen-Kontext
++- Wissensstrukturierung könnte Assessment-Inhalte liefern
++
++### mindforge_work
++
++**Website:** https://tobiaswaggoner.github.io/mindforge_work/
++
++**Relevante Konzepte für D&D:**
++- **Dungeon-Metapher**: Method of Loci für räumliche Wissensverankerung
++- **Chaos-Mechanik**: Spaced Repetition als Verfall (1-2-4-8-16 Tage)
++- **Loss Aversion**: Schlüssel drohen nach 14 Tagen zu brechen
++- **Diagnostik**: Analyse der Antworten mit zeitlicher Gewichtung
++
++---
++
++*Nächster Sync: Führe `/sync-projects` aus*
+-- 
+2.43.0
+
