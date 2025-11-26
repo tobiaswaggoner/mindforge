@@ -2,120 +2,212 @@
 
 Diese Datei gibt Claude Code (claude.ai/code) Orientierung bei der Arbeit mit dem Code in diesem Repository.
 
-## Projekt-Ökosystem
+## Projektübersicht
 
-Dieses Repository ist Teil eines **Drei-Repo-Ökosystems** für KI-gestütztes Lernen:
+**MindForge** ist die Content Engine für das KI-gestützte Lern-Ökosystem. Die Kernaufgabe ist die AI-gestützte Generierung, Verwaltung und Qualitätssicherung von Lerninhalten (Fragen, Antworten, Varianten).
 
-| Repository | Zweck | Link |
-|------------|-------|------|
-| **mindforge** (dieses Repo) | KI-Tutor für Wissens-Capture & RAG-Retrieval | - |
-| **dungeons-and-diplomas** | Assessment Tool + Üben/Verfestigen (Gamified) | [GitHub](https://github.com/milchinien/dungeons-and-diplomas) |
-| **mindforge_work** | Projekt-Wiki & Dokumentation | [Website](https://tobiaswaggoner.github.io/mindforge_work/) |
+### Projekt-Ökosystem
 
-### Wie die Projekte zusammenhängen
+| Repository | Zweck | Status |
+|------------|-------|--------|
+| **mindforge** (dieses Repo) | Content Engine & Admin Backend | Aktiv |
+| **dungeons-and-diplomas** | Game-basiertes Assessment Tool | Aktiv |
+| **mindforge_work** | Projekt-Wiki & Konzepte | Referenz |
 
-```
-┌─────────────────────────────────────────────────────────────────┐
-│                    MindForge Ökosystem                          │
-├─────────────────────────────────────────────────────────────────┤
-│                                                                 │
-│  ┌─────────────────┐     ┌─────────────────────────────────┐   │
-│  │   MindForge     │     │    Dungeons & Diplomas          │   │
-│  │   (The Codex)   │     │    (Assessment Tool)            │   │
-│  ├─────────────────┤     ├─────────────────────────────────┤   │
-│  │ • Wissen        │     │ • Wissensstand diagnostizieren  │   │
-│  │   erfassen      │────▶│ • Üben & Verfestigen            │   │
-│  │ • Strukturieren │     │ • Spaced Repetition             │   │
-│  │ • RAG-Retrieval │◀────│ • Adaptive Lernpfade            │   │
-│  └─────────────────┘     └─────────────────────────────────┘   │
-│           │                           │                         │
-│           └───────────┬───────────────┘                         │
-│                       ▼                                         │
-│            ┌─────────────────────┐                              │
-│            │   mindforge_work    │                              │
-│            │   (Wiki/Planung)    │                              │
-│            └─────────────────────┘                              │
-└─────────────────────────────────────────────────────────────────┘
-```
+### Aktueller Fokus
 
-### Relevanz für MindForge
-
-Bei Änderungen in den Schwester-Repos ist für MindForge **primär relevant**:
-- Assessment-Logik & Fragen-Formate (D&D)
-- Tracking & Diagnostik-Konzepte (D&D)
-- Konzeptuelle Entscheidungen (Wiki)
-- API-Schnittstellen zwischen den Systemen
-
-**Weniger relevant** (nur als Einzeiler notieren):
-- Game-Assets, Sprites, Animationen (D&D)
-- UI/UX-Mechaniken des Spiels (D&D)
-- Phaser/Game-Engine-Details (D&D)
+1. **Admin Backend** - UI zur Steuerung der Content-Generierung
+2. **Content Pipeline** - AI-gestützte Fragen- und Varianten-Generierung
+3. **Datenbank-Abstraktionsschicht** - SQLite (lokal) / Supabase (deployed)
 
 ---
 
-## Projektübersicht
+## Architektur
 
-**MindForge: The Codex** ist ein KI-gestützter Lern-Tracker, der Schülern hilft, Lerninhalte systematisch zu erfassen und zu archivieren. Das Projekt adressiert die Wissensfragmentierung im Schulalltag, indem es durch tägliche Interaktionen mit einem KI-Tutor eine umfassende, persönliche Wissensdatenbank aufbaut.
+### Monorepo-Struktur
 
-### Kernkonzept
-- Schüler nutzen multimodale Eingaben (Text, Sprache, Fotos) für 5-10 Minuten tägliche Sessions
-- KI-Tutor führt Schüler durch ihre Schulfächer
-- Inhalte werden automatisch verarbeitet und für späteren Abruf archiviert
-- Natürlichsprachliche Abfragen ermöglichen einfachen Zugriff auf vergangene Lerninhalte
+```
+mindforge/
+├── apps/                           # Lauffähige Anwendungen
+│   ├── backend/                    # Python API (zentral für alle Frontends)
+│   │   └── src/
+│   ├── admin/                      # Admin UI (Next.js + Tailwind + ShadCN)
+│   └── [tutor]/                    # (Zukünftig) KI-Tutor App
+├── packages/                       # Geteilter Code
+│   ├── db/                         # Datenbank-Abstraktionsschicht
+│   └── types/                      # Geteilte TypeScript/Python Types
+├── ai/                             # AI-Konfiguration & Prompts
+│   └── instructions/
+├── docs/                           # Dokumentation
+│   ├── brainstorming/              # Historische Konzepte
+│   └── architecture/               # Aktuelle Architektur-Docs
+└── tools/                          # Interne Hilfswerkzeuge
+```
 
-## Architektur & Technologie-Stack
+### Tech Stack
 
-### Aktueller Stand
-Dies ist ein Projekt in früher Phase mit minimaler Implementierung:
-- Dokumentation existiert nur in `docs/brainstorming/` mit deutschen Spezifikationen
+| Komponente | Technologie | Anmerkungen |
+|------------|-------------|-------------|
+| **Frontend** | Next.js + Tailwind + ShadCN | Für alle Web-UIs |
+| **Backend** | Python (FastAPI/Flask) | Für LLM-Pipelines |
+| **Datenbank** | SQLite (lokal) / Supabase (prod) | Mit Abstraktionsschicht |
+| **LLM** | OpenAI (GPT-5.1) | Abstrahiert für Provider-Wechsel |
 
-### Geplante Architektur (aus Spezifikationen)
-- **Frontend**: React-basierte responsive Web-App (Mobile-First)
-- **Backend**: Node.js mit Express-Framework
-- **Datenbank**: MongoDB mit Event-Sourcing-Pattern (ohne dedizierte Event-Store-Bibliothek)
-- **Authentifizierung**: OAuth (Google als initialer Provider)
-- **KI-Integration**: Multimodales LLM (OpenAI Vision) für Content-Verarbeitung
-- **Containerisierung**: Docker Compose Setup
+### Datenbank-Strategie
 
-## Hauptfeatures (MVP-Scope)
+- **Lokale Entwicklung**: SQLite
+- **Deployment**: Supabase (PostgreSQL)
+- **Abstraktionsschicht**: Einheitliches Interface für beide Backends
 
-1. **KI-geführte tägliche Check-ins** - Dialogbasiertes Interface für Content-Erfassung
-2. **Multimodale Eingabe** - Text, Sprachaufnahmen, Foto-Uploads mit OCR
-3. **Intelligente Archivierung** - Auto-Kategorisierung nach Fach und Datum
-4. **Semantische Suche** - Natürlichsprachliche Abfragen über erfasste Inhalte
-5. **Content-Zusammenfassungen** - LLM-generierte tägliche Fach-Zusammenfassungen
+---
+
+## Datenmodell (Content)
+
+### Kernentitäten
+
+```
+Subject (Fach)
+  └── QuestionCluster (Kanonische Frage)
+        ├── cluster_id (z.B. "mathe_gleichung_linear_01")
+        ├── topic (z.B. "Lineare Gleichungen")
+        ├── canonical_template
+        └── QuestionVariant[]
+              ├── question_text
+              ├── answers[]
+              ├── correct_index
+              └── variant_id
+```
+
+### Datenbank-Schema (Erweiterung zu D&D)
+
+```sql
+-- Cluster-Metadaten
+CREATE TABLE question_clusters (
+  id TEXT PRIMARY KEY,
+  subject_key TEXT NOT NULL,
+  topic TEXT NOT NULL,
+  canonical_template TEXT,
+  difficulty_baseline INTEGER DEFAULT 5,
+  created_at DATETIME DEFAULT CURRENT_TIMESTAMP
+);
+
+-- Erweiterte Questions-Tabelle
+-- (kompatibel mit D&D, erweitert um cluster_id)
+ALTER TABLE questions ADD COLUMN cluster_id TEXT REFERENCES question_clusters(id);
+```
+
+---
+
+## LLM-Integration
+
+### Provider-Abstraktion
+
+```python
+# Abstraktes Interface
+class LLMProvider:
+    def generate(self, prompt: str, model: str) -> str: ...
+
+# Konkrete Implementierungen
+class OpenAIProvider(LLMProvider): ...
+class AnthropicProvider(LLMProvider): ...  # Zukünftig
+```
+
+### Modell-Konfiguration
+
+- **Standard**: GPT-5.1 (OpenAI)
+- **Konfigurierbar**: Modell pro Use-Case wählbar
+- **Kostenoptimierung**: Günstigere Modelle für einfache Tasks
+
+---
+
+## Tracking-System (Geplant)
+
+Für Audit, Rollback und Qualitätssicherung:
+
+### IDs
+
+| ID-Typ | Zweck |
+|--------|-------|
+| **Generation Session ID** | Gruppiert alle Generierungen einer Session |
+| **Correlation ID** | Verknüpft einen Request mit allen Ergebnissen |
+
+### Tracking-Tabelle (Konzept)
+
+```sql
+CREATE TABLE generation_tracking (
+  id INTEGER PRIMARY KEY,
+  session_id TEXT NOT NULL,
+  correlation_id TEXT NOT NULL,
+  entity_type TEXT NOT NULL,      -- 'question', 'variant', 'cluster'
+  entity_id TEXT NOT NULL,
+  action TEXT NOT NULL,           -- 'created', 'updated', 'deleted'
+  created_at DATETIME DEFAULT CURRENT_TIMESTAMP
+);
+```
+
+### Use Cases
+
+- Audit-Log: "Wer hat wann was generiert?"
+- Rollback: "Lösche alle Fragen aus Session X"
+- Analyse: "Qualität der Generierungen von gestern"
+
+---
 
 ## Entwicklungs-Befehle
 
-Aktuell ist noch kein Build-System konfiguriert. Basierend auf dem geplanten Tech-Stack wird erwartet:
-- `npm install` - Abhängigkeiten installieren
-- `npm run dev` - Development-Server
-- `npm run build` - Production-Build
-- `docker-compose up` - Container-Deployment
+### Backend (Python API)
 
-## Entwicklungshinweise
+```bash
+cd apps/backend
+pip install -r requirements.txt
+python -m uvicorn main:app --reload
+```
 
-### Datenverarbeitungs-Pipeline
-- Rohe Eingaben (Text/Sprache/Bilder) → Multimodales LLM-Processing → Tägliche Fach-Zusammenfassungen → RAG-basierter Abruf
-- Event-Sourcing-Ansatz speichert alle Interaktionen chronologisch
-- Generierte Zusammenfassungen dienen als primäre Wissensbasis für Abfragen
+### Admin UI (Next.js)
 
-### Happy Path (V1)
-1. Google OAuth Authentifizierung
-2. KI-Tutor fragt nach den heutigen Fächern
-3. Schüler lädt Foto eines Hefteintrags hoch
-4. LLM extrahiert und verarbeitet den Inhalt
-5. Hintergrundprozess generiert tägliche Fach-Zusammenfassung
-6. Spätere Abfragen rufen Informationen über RAG-System ab
+```bash
+cd apps/admin
+npm install
+npm run dev
+```
 
-### Außerhalb des Scopes (V1)
-- Bearbeiten/Löschen-Funktionalität
-- Gruppen-Kollaborationsfeatures
-- Lehrer-Accounts
-- Erweiterte semantische Suche
-- Lernmodule (Quizzes, Karteikarten)
+### Datenbank
 
-## Sprache & Lokalisierung
-- Primärsprache: Deutsch
-- Zielgruppe: Deutschsprachige Schüler
-- Alle Code-Kommentare und Typen sind auf Englisch
+```bash
+# Lokale SQLite initialisieren
+python -m packages.db.init
+
+# Supabase Migration (Deployment)
+supabase db push
+```
+
+---
+
+## Coding-Konventionen
+
+### Sprache
+
+- **Code & Kommentare**: Englisch
+- **UI-Texte**: Deutsch
+- **Dokumentation**: Deutsch (dieses Repo), Englisch (Code-Docs)
+
+### Code-Style
+
+- **Python**: PEP 8, Type Hints
+- **TypeScript**: ESLint + Prettier
+- **Commits**: Conventional Commits (feat, fix, docs, ...)
+
+---
+
+## Schnittstelle zu D&D
+
+MindForge generiert Content, der von D&D konsumiert wird:
+
+- **Geteilte Datenbank**: Gleiche SQLite/Supabase-Instanz
+- **Fragen-Format**: Kompatibel mit D&D `questions`-Tabelle
+- **Neue Felder**: `cluster_id` für Varianten-Gruppierung
+
+### D&D Anpassungen (separat)
+
+- Question-Selection: Cluster → zufällige Variante
+- Tracking: `answer_log` bleibt unverändert (referenziert `question_id`)
