@@ -1,8 +1,8 @@
 # CLAUDE.md
 
-This file provides guidance to Claude Code (claude.ai/code) when working with code in this repository.
+Diese Datei gibt Claude Code (claude.ai/code) Orientierung bei der Arbeit mit dem Code in diesem Repository.
 
-## Project Ecosystem
+## Projekt-Ökosystem
 
 Dieses Repository ist Teil eines **Drei-Repo-Ökosystems** für KI-gestütztes Lernen:
 
@@ -53,69 +53,69 @@ Bei Änderungen in den Schwester-Repos ist für MindForge **primär relevant**:
 
 ---
 
-## Project Overview
+## Projektübersicht
 
-**MindForge: The Codex** is an AI-powered learning tracker designed to help students systematically capture and archive educational content. The project addresses knowledge fragmentation in school environments by enabling daily interactions with an AI tutor to build a comprehensive, personal knowledge database.
+**MindForge: The Codex** ist ein KI-gestützter Lern-Tracker, der Schülern hilft, Lerninhalte systematisch zu erfassen und zu archivieren. Das Projekt adressiert die Wissensfragmentierung im Schulalltag, indem es durch tägliche Interaktionen mit einem KI-Tutor eine umfassende, persönliche Wissensdatenbank aufbaut.
 
-### Core Concept
-- Students use multimodal input (text, voice, photos) for 5-10 minute daily sessions
-- AI tutor guides students through their school subjects
-- Content is automatically processed and archived for future retrieval
-- Natural language queries enable easy access to past learning content
+### Kernkonzept
+- Schüler nutzen multimodale Eingaben (Text, Sprache, Fotos) für 5-10 Minuten tägliche Sessions
+- KI-Tutor führt Schüler durch ihre Schulfächer
+- Inhalte werden automatisch verarbeitet und für späteren Abruf archiviert
+- Natürlichsprachliche Abfragen ermöglichen einfachen Zugriff auf vergangene Lerninhalte
 
-## Architecture & Technology Stack
+## Architektur & Technologie-Stack
 
-### Current State
-This is an early-stage project with minimal implementation:
-- Documentation exists only in `docs/brainstorming/` with German specifications
+### Aktueller Stand
+Dies ist ein Projekt in früher Phase mit minimaler Implementierung:
+- Dokumentation existiert nur in `docs/brainstorming/` mit deutschen Spezifikationen
 
-### Planned Architecture (from specifications)
-- **Frontend**: React-based responsive web app (Mobile-First)
-- **Backend**: Node.js with Express framework
-- **Database**: MongoDB with Event Sourcing pattern (without dedicated event store)
-- **Authentication**: OAuth (Google as initial provider)
-- **AI Integration**: Multimodal LLM (OpenAI Vision) for content processing
-- **Containerization**: Docker Compose setup
+### Geplante Architektur (aus Spezifikationen)
+- **Frontend**: React-basierte responsive Web-App (Mobile-First)
+- **Backend**: Node.js mit Express-Framework
+- **Datenbank**: MongoDB mit Event-Sourcing-Pattern (ohne dedizierte Event-Store-Bibliothek)
+- **Authentifizierung**: OAuth (Google als initialer Provider)
+- **KI-Integration**: Multimodales LLM (OpenAI Vision) für Content-Verarbeitung
+- **Containerisierung**: Docker Compose Setup
 
-## Key Features (MVP Scope)
+## Hauptfeatures (MVP-Scope)
 
-1. **AI-guided daily check-ins** - Conversational interface for content capture
-2. **Multimodal input** - Text, audio recordings, photo uploads with OCR
-3. **Intelligent archiving** - Auto-categorization by subject and date
-4. **Semantic search** - Natural language queries over captured content
-5. **Content summarization** - LLM-generated daily subject summaries
+1. **KI-geführte tägliche Check-ins** - Dialogbasiertes Interface für Content-Erfassung
+2. **Multimodale Eingabe** - Text, Sprachaufnahmen, Foto-Uploads mit OCR
+3. **Intelligente Archivierung** - Auto-Kategorisierung nach Fach und Datum
+4. **Semantische Suche** - Natürlichsprachliche Abfragen über erfasste Inhalte
+5. **Content-Zusammenfassungen** - LLM-generierte tägliche Fach-Zusammenfassungen
 
-## Development Commands
+## Entwicklungs-Befehle
 
-Currently no build system is configured. Based on the planned tech stack, expect:
-- `npm install` - Install dependencies
-- `npm run dev` - Development server
-- `npm run build` - Production build
-- `docker-compose up` - Container deployment
+Aktuell ist noch kein Build-System konfiguriert. Basierend auf dem geplanten Tech-Stack wird erwartet:
+- `npm install` - Abhängigkeiten installieren
+- `npm run dev` - Development-Server
+- `npm run build` - Production-Build
+- `docker-compose up` - Container-Deployment
 
-## Development Notes
+## Entwicklungshinweise
 
-### Data Processing Pipeline
-- Raw inputs (text/voice/images) → Multimodal LLM processing → Daily subject summaries → RAG-enabled retrieval
-- Event sourcing approach stores all interactions chronologically
-- Generated summaries serve as the primary knowledge base for queries
+### Datenverarbeitungs-Pipeline
+- Rohe Eingaben (Text/Sprache/Bilder) → Multimodales LLM-Processing → Tägliche Fach-Zusammenfassungen → RAG-basierter Abruf
+- Event-Sourcing-Ansatz speichert alle Interaktionen chronologisch
+- Generierte Zusammenfassungen dienen als primäre Wissensbasis für Abfragen
 
 ### Happy Path (V1)
-1. Google OAuth authentication
-2. AI tutor asks about today's subjects
-3. Student uploads photo of notebook entry
-4. LLM extracts and processes content
-5. Background process generates daily subject summary
-6. Future queries retrieve information via RAG system
+1. Google OAuth Authentifizierung
+2. KI-Tutor fragt nach den heutigen Fächern
+3. Schüler lädt Foto eines Hefteintrags hoch
+4. LLM extrahiert und verarbeitet den Inhalt
+5. Hintergrundprozess generiert tägliche Fach-Zusammenfassung
+6. Spätere Abfragen rufen Informationen über RAG-System ab
 
-### Out of Scope (V1)
-- Edit/delete functionality
-- Group collaboration features  
-- Teacher accounts
-- Advanced semantic search
-- Learning modules (quizzes, flashcards)
+### Außerhalb des Scopes (V1)
+- Bearbeiten/Löschen-Funktionalität
+- Gruppen-Kollaborationsfeatures
+- Lehrer-Accounts
+- Erweiterte semantische Suche
+- Lernmodule (Quizzes, Karteikarten)
 
-## Language & Localization
-- Primary language: German
-- Target users: German-speaking students
-- All code comments and types are in English
+## Sprache & Lokalisierung
+- Primärsprache: Deutsch
+- Zielgruppe: Deutschsprachige Schüler
+- Alle Code-Kommentare und Typen sind auf Englisch
