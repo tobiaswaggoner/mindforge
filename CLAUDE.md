@@ -2,13 +2,64 @@
 
 This file provides guidance to Claude Code (claude.ai/code) when working with code in this repository.
 
+## Project Ecosystem
+
+Dieses Repository ist Teil eines **Drei-Repo-Ökosystems** für KI-gestütztes Lernen:
+
+| Repository | Zweck | Link |
+|------------|-------|------|
+| **mindforge** (dieses Repo) | KI-Tutor für Wissens-Capture & RAG-Retrieval | - |
+| **dungeons-and-diplomas** | Assessment Tool + Üben/Verfestigen (Gamified) | [GitHub](https://github.com/milchinien/dungeons-and-diplomas) |
+| **mindforge_work** | Projekt-Wiki & Dokumentation | [Website](https://tobiaswaggoner.github.io/mindforge_work/) |
+
+### Wie die Projekte zusammenhängen
+
+```
+┌─────────────────────────────────────────────────────────────────┐
+│                    MindForge Ökosystem                          │
+├─────────────────────────────────────────────────────────────────┤
+│                                                                 │
+│  ┌─────────────────┐     ┌─────────────────────────────────┐   │
+│  │   MindForge     │     │    Dungeons & Diplomas          │   │
+│  │   (The Codex)   │     │    (Assessment Tool)            │   │
+│  ├─────────────────┤     ├─────────────────────────────────┤   │
+│  │ • Wissen        │     │ • Wissensstand diagnostizieren  │   │
+│  │   erfassen      │────▶│ • Üben & Verfestigen            │   │
+│  │ • Strukturieren │     │ • Spaced Repetition             │   │
+│  │ • RAG-Retrieval │◀────│ • Adaptive Lernpfade            │   │
+│  └─────────────────┘     └─────────────────────────────────┘   │
+│           │                           │                         │
+│           └───────────┬───────────────┘                         │
+│                       ▼                                         │
+│            ┌─────────────────────┐                              │
+│            │   mindforge_work    │                              │
+│            │   (Wiki/Planung)    │                              │
+│            └─────────────────────┘                              │
+└─────────────────────────────────────────────────────────────────┘
+```
+
+### Relevanz für MindForge
+
+Bei Änderungen in den Schwester-Repos ist für MindForge **primär relevant**:
+- Assessment-Logik & Fragen-Formate (D&D)
+- Tracking & Diagnostik-Konzepte (D&D)
+- Konzeptuelle Entscheidungen (Wiki)
+- API-Schnittstellen zwischen den Systemen
+
+**Weniger relevant** (nur als Einzeiler notieren):
+- Game-Assets, Sprites, Animationen (D&D)
+- UI/UX-Mechaniken des Spiels (D&D)
+- Phaser/Game-Engine-Details (D&D)
+
+---
+
 ## Project Overview
 
 **MindForge: The Codex** is an AI-powered learning tracker designed to help students systematically capture and archive educational content. The project addresses knowledge fragmentation in school environments by enabling daily interactions with an AI tutor to build a comprehensive, personal knowledge database.
 
 ### Core Concept
 - Students use multimodal input (text, voice, photos) for 5-10 minute daily sessions
-- AI tutor guides students through their school subjects 
+- AI tutor guides students through their school subjects
 - Content is automatically processed and archived for future retrieval
 - Natural language queries enable easy access to past learning content
 

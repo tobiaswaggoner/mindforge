@@ -1,0 +1,20 @@
+{
+  "last_sync": null,
+  "first_run": true,
+  "repos": {
+    "mindforge": {
+      "path": ".",
+      "last_commit": null
+    },
+    "dungeons-and-diplomas": {
+      "path": "/home/user/dungeons-and-diplomas",
+      "remote": "https://github.com/milchinien/dungeons-and-diplomas.git",
+      "last_commit": null
+    },
+    "mindforge_work": {
+      "path": "/home/user/mindforge_work",
+      "remote": "https://github.com/tobiaswaggoner/mindforge_work.git",
+      "last_commit": null
+    }
+  }
+}
