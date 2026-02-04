@@ -1,0 +1,23 @@
+{
+  "name": "mindforge",
+  "private": true,
+  "workspaces": ["apps/*", "packages/*"],
+  "scripts": {
+    "dev:core": "bun --cwd apps/core run dev",
+    "dev:admin": "bun --cwd apps/admin run dev",
+    "dev:auth-api": "bun --cwd apps/auth-api run dev",
+    "dev:auth-ui": "bun --cwd apps/auth-ui run dev",
+    "build": "bun run build:packages && bun run build:apps",
+    "build:packages": "bun --cwd packages/shared-types run build && bun --cwd packages/shared-utils run build",
+    "build:apps": "bun --cwd apps/core run build && bun --cwd apps/admin run build",
+    "typecheck": "tsc --build",
+    "lint": "eslint .",
+    "clean": "rm -rf node_modules apps/*/node_modules packages/*/node_modules"
+  },
+  "devDependencies": {
+    "@eslint/js": "^9.39.0",
+    "@types/bun": "^1.2.0",
+    "typescript": "^5.9.3",
+    "typescript-eslint": "^8.32.0"
+  }
+}

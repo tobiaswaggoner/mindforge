@@ -1,0 +1,41 @@
+{
+  "name": "@mindforge/shared-types",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js"
+    },
+    "./auth": {
+      "types": "./dist/auth/index.d.ts",
+      "import": "./dist/auth/index.js"
+    },
+    "./content": {
+      "types": "./dist/content/index.d.ts",
+      "import": "./dist/content/index.js"
+    },
+    "./tasks": {
+      "types": "./dist/tasks/index.d.ts",
+      "import": "./dist/tasks/index.js"
+    },
+    "./common": {
+      "types": "./dist/common/index.d.ts",
+      "import": "./dist/common/index.js"
+    }
+  },
+  "scripts": {
+    "build": "tsc",
+    "dev": "tsc --watch",
+    "typecheck": "tsc --noEmit"
+  },
+  "dependencies": {
+    "zod": "^4.3.6"
+  },
+  "devDependencies": {
+    "typescript": "^5.9.3"
+  }
+}

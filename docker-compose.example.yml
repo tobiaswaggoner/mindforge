@@ -1,0 +1,102 @@
+services:
+  # Auth API
+  auth-api:
+    build:
+      context: ./apps/auth-api
+      dockerfile: Dockerfile
+    container_name: mindforge-auth-api
+    ports:
+      - "4000:4000"
+    environment:
+      - NODE_ENV=production
+      - PORT=4000
+      - DATABASE_URL=postgres://YOUR_USER:YOUR_PASSWORD@YOUR_HOST:5432/mindforge_auth
+      - JWT_SECRET=generate-a-random-32-char-secret-here
+      - AUTH_UI_URL=http://localhost:3000
+      - CORS_ORIGINS=http://localhost:3000,http://localhost:3001,http://localhost:4201
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:4000/health"]
+      interval: 10s
+      timeout: 5s
+      retries: 3
+    restart: unless-stopped
+
+  # Core API
+  core:
+    build:
+      context: ./apps/core
+      dockerfile: Dockerfile
+    container_name: mindforge-core
+    ports:
+      - "4202:4202"
+    environment:
+      - NODE_ENV=production
+      - PORT=4202
+      - DATABASE_URL=postgres://YOUR_USER:YOUR_PASSWORD@YOUR_HOST:5432/mindforge_core
+      - JWT_SECRET=generate-a-random-32-char-secret-here
+      - CORS_ORIGINS=http://localhost:3000,http://localhost:3001,http://localhost:4201
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:4202/health"]
+      interval: 10s
+      timeout: 5s
+      retries: 3
+    restart: unless-stopped
+
+  # Admin UI
+  admin:
+    build:
+      context: ./apps/admin
+      dockerfile: Dockerfile
+      args:
+        - NEXT_PUBLIC_API_URL=http://localhost:4202
+    container_name: mindforge-admin
+    ports:
+      - "4201:4201"
+    environment:
+      - NODE_ENV=production
+    depends_on:
+      core:
+        condition: service_healthy
+    restart: unless-stopped
+
+# Uncomment for local PostgreSQL (instead of external DB)
+# ---
+#  postgres-auth:
+#    image: postgres:16-alpine
+#    container_name: mindforge-postgres-auth
+#    environment:
+#      POSTGRES_USER: postgres
+#      POSTGRES_PASSWORD: postgres
+#      POSTGRES_DB: mindforge_auth
+#    volumes:
+#      - postgres-auth-data:/var/lib/postgresql/data
+#    ports:
+#      - "5432:5432"
+#    healthcheck:
+#      test: ["CMD-SHELL", "pg_isready -U postgres"]
+#      interval: 5s
+#      timeout: 5s
+#      retries: 5
+#    restart: unless-stopped
+#
+#  postgres-core:
+#    image: postgres:16-alpine
+#    container_name: mindforge-postgres-core
+#    environment:
+#      POSTGRES_USER: postgres
+#      POSTGRES_PASSWORD: postgres
+#      POSTGRES_DB: mindforge_core
+#    volumes:
+#      - postgres-core-data:/var/lib/postgresql/data
+#    ports:
+#      - "5433:5432"
+#    healthcheck:
+#      test: ["CMD-SHELL", "pg_isready -U postgres"]
+#      interval: 5s
+#      timeout: 5s
+#      retries: 5
+#    restart: unless-stopped
+#
+#volumes:
+#  postgres-auth-data:
+#  postgres-core-data:

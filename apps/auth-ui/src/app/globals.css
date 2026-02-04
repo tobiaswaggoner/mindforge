@@ -1,0 +1,57 @@
+@import "tailwindcss";
+
+@theme {
+  /* Primary Colors (Orange) */
+  --color-primary: #FF6D00;
+  --color-primary-dark: #E55E00;
+  --color-primary-light: #FF8F00;
+
+  /* Dark Mode Backgrounds */
+  --color-bg-dark: #0F1419;
+  --color-surface: #1A2332;
+  --color-surface-light: #242D3A;
+  --color-border: #3A4A5C;
+
+  /* Text Colors */
+  --color-text-primary: #F1F5F9;
+  --color-text-secondary: #94A3B8;
+  --color-text-muted: #64748B;
+
+  /* Semantic Colors */
+  --color-success: #10B981;
+  --color-warning: #F59E0B;
+  --color-error: #EF4444;
+  --color-info: #3B82F6;
+}
+
+/* Base styles */
+body {
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  background-color: var(--color-bg-dark);
+  color: var(--color-text-primary);
+}
+
+/* Focus visible for accessibility */
+:focus-visible {
+  outline: 2px solid var(--color-primary);
+  outline-offset: 2px;
+}
+
+/* Custom scrollbar for dark mode */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: var(--color-surface);
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--color-border);
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: var(--color-text-muted);
+}
